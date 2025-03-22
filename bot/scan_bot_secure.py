@@ -50,6 +50,20 @@ def load_sources_secure():
         data = json.load(f)
         return {str(item['id']): item['access_hash'] for item in data}
 
+# === Generate keyword-centered snippet ===
+def get_snippet(text, keyword, width=400):
+    index = text.lower().find(keyword)
+    if index == -1:
+        return text[:width] + ('...' if len(text) > width else '')
+    start = max(index - width // 2, 0)
+    end = min(start + width, len(text))
+    snippet = text[start:end]
+    if start > 0:
+        snippet = '...' + snippet
+    if end < len(text):
+        snippet += '...'
+    return snippet
+
 # === Main scan function ===
 async def execute_scan(client, full_scan=False, override_keywords=None):
     keywords = override_keywords or load_keywords()
@@ -84,12 +98,13 @@ async def execute_scan(client, full_scan=False, override_keywords=None):
                     continue
 
                 text = message.text.lower()
-                if any(kw in text for kw in keywords):
+                matched_kw = next((kw for kw in keywords if kw in text), None)
+                if matched_kw:
                     try:
                         await client.forward_messages(chat_id_gruppo, message)
                     except:
-                        snippet = message.text[:1000] + ('...' if len(message.text) > 1000 else '')
-                        await client.send_message(chat_id_gruppo, f"🔍 Match found in {source}:
+                        snippet = get_snippet(message.text, matched_kw)
+                        await client.send_message(chat_id_gruppo, f"🔍 Match in {source}:
 
 {snippet}")
                     matches_found += 1
