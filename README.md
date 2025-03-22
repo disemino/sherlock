@@ -69,8 +69,8 @@ From your private Telegram group:
 
 - `/scan` → scan last 200 messages with keywords
 - `/fullscan` → scan entire history since 24 Feb 2022
-- `/scan ivanov` → scan last 200 for just "ivanov"
-- `/fullscan petrov` → full history for just "petrov"
+- `/scan jackson` → scan last 200 for just "jackson"
+- `/fullscan johnson` → full history for just "johnson"
 - `/addsource @channel` → append new source
 - `/status`, `/reset` → status & message cleanup
 
