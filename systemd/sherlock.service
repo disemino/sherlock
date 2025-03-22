@@ -1,0 +1,13 @@
+[Unit]
+Description=Sherlock Telegram Bot
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/root/sherlock
+ExecStart=/root/sherlock/venv/bin/python3 /root/sherlock/bot/scan_bot_secure.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

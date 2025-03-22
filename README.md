@@ -1,91 +1,89 @@
 # Sherlock Telegram Monitor Bot
 
-**Sherlock** is a Telegram-based scanner bot designed to help monitor public and private channels and groups for keywords, primarily used to track missing persons during conflict zones.
+Sherlock is a Telegram-based bot to monitor public and private channels/groups for keywords – ideal for humanitarian use cases such as tracking missing persons in conflict zones.
 
 ---
 
-## 🛠️ Features
+## 🔧 Features
 
-- Monitor Telegram channels/groups using `@username`, `-100...` ID, or `access_hash`
-- Works with protected/private channels via access_hash
-- Highlight matched keywords in extracted message text
-- Ignore duplicates automatically
-- Accepts `/scan` and `/fullscan` commands from a private group
-- Supports one-time keyword search like `/scan ivanov`
-- Commands `/status`, `/reset`, `/addsource`
-
----
-
-## 📦 Files
-
-- `bot/scan_bot_secure.py`: main bot script
-- `data/keywords.txt`: (empty) list of keywords to monitor (one per line)
-- `data/sources.txt`: (empty) list of sources: @channel or -100id
-- `data/sources_secure.json`: (empty) list of secure sources (private channels with access_hash)
-- `scripts/export_sources.py`: export joined private channels with access_hash
-- `scripts/start.sh`: run the bot in background with `nohup`
-- `.env.example`: copy to `.env` and insert your API credentials
-- `requirements.txt`: install with `pip install -r requirements.txt`
+- Monitor any Telegram channel or group (even private)
+- Works with @usernames or -100... channel IDs
+- Supports protected channels via `sources_secure.json`
+- Detects and highlights keywords (static or via `/scan <word>`)
+- Duplicate message detection
+- Dynamic commands from a private group
+- Fully async and systemd-compatible
 
 ---
 
-## 🚀 Setup
+## 📁 Structure
+
+```
+sherlock/
+├── bot/
+│   └── scan_bot_secure.py        # Main bot logic (insert your version)
+├── data/
+│   ├── keywords.txt              # One keyword per line (UTF-8, lowercase)
+│   ├── sources.txt               # List of sources: @channel or -100...
+│   ├── sources_secure.json       # Private channels with access_hash
+│   └── seen_messages.txt         # Auto-managed
+├── scripts/
+│   ├── export_sources.py         # Export private channel info
+│   ├── start.sh / stop.sh        # Manual bot control
+├── systemd/
+│   └── sherlock.service          # Autostart with system
+├── .env.example                  # Put your API credentials here
+├── requirements.txt              # Python dependencies
+└── README.md
+```
+
+---
+
+## 🚀 Setup on VPS (Debian-based)
 
 ```bash
-git clone <this-repo>
+apt update && apt install -y python3 python3-venv git
+git clone https://github.com/yourusername/sherlock.git
 cd sherlock
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env  # fill your credentials
+cp .env.example .env
+nano .env  # insert API_ID and API_HASH
 ```
 
-Then edit `data/keywords.txt` and `data/sources.txt`.
+---
+
+## 🔐 Private Channel Setup
+
+1. Join private channels with the same account
+2. Run: `python3 scripts/export_sources.py`
+3. Copy desired entries into `data/sources_secure.json`
+4. Add corresponding `-100<id>` in `sources.txt`
 
 ---
 
-## 🔐 Private Channels
+## 💬 Commands
 
-1. Join the private channel manually from the same Telegram account
-2. Run `scripts/export_sources.py`
-3. Copy only the relevant blocks into `data/sources_secure.json`
-4. In `sources.txt`, add `-100<id>` of that channel
-   - e.g. `-1001251934223`
+From your private Telegram group:
 
-Sherlock will match this `id` to the secure list and use `access_hash` internally.
-
----
-
-## 🧪 Usage
-
-From your private Telegram group, send commands:
-
-- `/scan` — scan last 200 messages from all sources
-- `/fullscan` — full historical scan since 24 Feb 2022
-- `/scan petrova` — scan last 200 for "petrova" only
-- `/fullscan ivanov` — full scan for "ivanov" only
-- `/addsource @newchannel` — adds to `sources.txt`
-- `/status` — shows stats
-- `/reset` — resets message history
+- `/scan` → scan last 200 messages with keywords
+- `/fullscan` → scan entire history since 24 Feb 2022
+- `/scan ivanov` → scan last 200 for just "ivanov"
+- `/fullscan petrov` → full history for just "petrov"
+- `/addsource @channel` → append new source
+- `/status`, `/reset` → status & message cleanup
 
 ---
 
-## 📬 Output
+## 🛡️ Important Notes
 
-Matched messages will be:
-
-- Forwarded to your private group (if possible)
-- OR summarized with extracted text and keyword highlight
-
----
-
-## ℹ️ Notes
-
-- Keywords are **case-insensitive**
-- `sources.txt` accepts `@username` or `-100...` format
-- `sources_secure.json` is optional, but needed for private/username-less channels
-- Forwarding from protected content will fail; fallback text will be sent
+- `keywords.txt` must be lowercase
+- Messages already scanned are skipped
+- Protected messages will fallback to text snippet if forward fails
+- `.env` and `.session` must NOT be pushed to GitHub
 
 ---
 
-Sherlock is meant for humanitarian, non-commercial use only.
+> 🔐 You must provide your own API credentials.  
+> 📄 Do **not** publish `.env` or `.session` files.
