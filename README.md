@@ -112,8 +112,8 @@ You can get your group ID using Telegram bots like [@userinfobot](https://t.me/u
 
 - `/scan` → Scan last 200 messages with all keywords
 - `/fullscan` → Full history scan since 24 Feb 2022
-- `/scan ivanov` → Scan last 200 for just "ivanov"
-- `/fullscan petrov` → Full history for just "petrov"
+- `/scan johnson` → Scan last 200 for just "johnson"
+- `/fullscan jackson` → Full history for just "jackson"
 - `/addsource @channelname` → Append a new source to the list
 - `/status` → Check current keyword/source stats
 - `/reset` → Reset scanned message cache
