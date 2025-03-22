@@ -21,7 +21,7 @@ Sherlock is a Telegram-based bot to monitor public and private channels/groups f
 ```
 sherlock/
 ├── bot/
-│   └── scan_bot_secure.py        # Main bot logic (insert your version)
+│   └── scan_bot_secure.py        # Main bot logic (insert your group ID)
 ├── data/
 │   ├── keywords.txt              # One keyword per line (UTF-8, lowercase)
 │   ├── sources.txt               # List of sources: @channel or -100...
@@ -49,8 +49,9 @@ python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
-nano .env  # insert API_ID and API_HASH
+nano .env  # insert your API_ID and API_HASH
 ```
+
 ---
 
 ## 🖥️ Install on Local Computer (macOS / Linux / Windows)
@@ -74,28 +75,48 @@ pip install -r requirements.txt
 # Create your environment file
 cp .env.example .env
 nano .env  # Fill in your own API_ID and API_HASH
+```
+
+---
+
+## 🔐 Configure Your Group Chat ID
+
+Open the file `bot/scan_bot_secure.py`.
+
+Search for this line:
+
+```python
+chat_id_gruppo = YOUR_GROUP_ID_HERE
+```
+
+Replace it with the ID of your private Telegram group or chat where you want to receive scan results:
+
+```python
+chat_id_gruppo = -1001234567890
+```
+
+You can get your group ID using Telegram bots like [@userinfobot](https://t.me/userinfobot) or from logs if your bot is already responding to that chat.
 
 ---
 
 ## 🔐 Private Channel Setup
 
-1. Join private channels with the same account
+1. Join private channels with the same account used for authentication
 2. Run: `python3 scripts/export_sources.py`
-3. Copy desired entries into `data/sources_secure.json`
-4. Add corresponding `-100<id>` in `sources.txt`
+3. Copy the desired entries into `data/sources_secure.json`
+4. Add the corresponding `-100<id>` into `data/sources.txt`
 
 ---
 
-## 💬 Commands
+## 💬 Bot Commands (in your private Telegram group)
 
-From your private Telegram group:
-
-- `/scan` → scan last 200 messages with keywords
-- `/fullscan` → scan entire history since 24 Feb 2022
-- `/scan jackson` → scan last 200 for just "jackson"
-- `/fullscan johnson` → full history for just "johnson"
-- `/addsource @channel` → append new source
-- `/status`, `/reset` → status & message cleanup
+- `/scan` → Scan last 200 messages with all keywords
+- `/fullscan` → Full history scan since 24 Feb 2022
+- `/scan ivanov` → Scan last 200 for just "ivanov"
+- `/fullscan petrov` → Full history for just "petrov"
+- `/addsource @channelname` → Append a new source to the list
+- `/status` → Check current keyword/source stats
+- `/reset` → Reset scanned message cache
 
 ---
 
@@ -103,10 +124,5 @@ From your private Telegram group:
 
 - `keywords.txt` must be lowercase
 - Messages already scanned are skipped
-- Protected messages will fallback to text snippet if forward fails
-- `.env` and `.session` must NOT be pushed to GitHub
-
----
-
-> 🔐 You must provide your own API credentials.  
-> 📄 Do **not** publish `.env` or `.session` files.
+- Protected messages will fallback to snippet text if forwarding fails
+- `.env`, `.session` and any tokens must NOT be published
