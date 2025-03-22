@@ -51,6 +51,29 @@ pip install -r requirements.txt
 cp .env.example .env
 nano .env  # insert API_ID and API_HASH
 ```
+---
+
+## 🖥️ Install on Local Computer (macOS / Linux / Windows)
+
+You can install and run Sherlock on your personal computer for testing or full use.
+
+### 📦 Step-by-step installation
+
+```bash
+# Clone the repository
+git clone https://github.com/disemino/sherlock.git
+cd sherlock
+
+# Create a virtual environment
+python3 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Create your environment file
+cp .env.example .env
+nano .env  # Fill in your own API_ID and API_HASH
 
 ---
 
